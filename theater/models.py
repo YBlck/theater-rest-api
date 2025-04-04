@@ -74,7 +74,7 @@ class Reservation(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self):
-        return f"{self.user.username} - {str(self.created_at)}"
+        return f"{str(self.created_at)} - {self.user.email}"
 
 
 class Ticket(models.Model):

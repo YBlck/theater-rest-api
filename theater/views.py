@@ -1,4 +1,7 @@
-from rest_framework import viewsets, status
+from datetime import datetime
+
+from django.db.models import F
+from django.db.models.aggregates import Count
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser
@@ -11,7 +14,11 @@ from theater.serializers import (
     PlaySerializer,
     PlayListSerializer,
     PlayDetailSerializer,
-    PlayImageSerializer, PerformanceSerializer, PerformanceListSerializer, TheaterHallSerializer,
+    PlayImageSerializer,
+    PerformanceSerializer,
+    PerformanceListSerializer,
+    TheaterHallSerializer,
+    PerformanceDetailSerializer,
 )
 
 
@@ -91,11 +98,34 @@ class PlayViewSet(viewsets.ModelViewSet):
 
 
 class PerformanceViewSet(viewsets.ModelViewSet):
-    queryset = Performance.objects.all()
+    queryset = Performance.objects.select_related("play", "theater_hall").annotate(
+        tickets_available=(
+            F("theater_hall__rows") * F("theater_hall__seats_in_row") - Count("tickets")
+        )
+    )
     serializer_class = PerformanceSerializer
+
+    def get_queryset(self):
+        """Performance filtering by play and date"""
+        play_id = self.request.query_params.get("play")
+        date = self.request.query_params.get("date")
+
+        queryset = self.queryset
+
+        if play_id:
+            queryset = queryset.filter(play=int(play_id))
+
+        if date:
+            date = datetime.strptime(date, "%Y-%m-%d")
+            queryset = queryset.filter(show_time__date=date)
+
+        return queryset
 
     def get_serializer_class(self):
         if self.action == "list":
             return PerformanceListSerializer
+
+        if self.action == "retrieve":
+            return PerformanceDetailSerializer
 
         return PerformanceSerializer

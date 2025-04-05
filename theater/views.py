@@ -4,7 +4,7 @@ from django.db.models import F
 from django.db.models.aggregates import Count
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 
 from theater.models import Actor, Genre, Play, Performance, TheaterHall, Reservation
@@ -18,7 +18,9 @@ from theater.serializers import (
     PerformanceSerializer,
     PerformanceListSerializer,
     TheaterHallSerializer,
-    PerformanceDetailSerializer, ReservationSerializer, ReservationListSerializer,
+    PerformanceDetailSerializer,
+    ReservationSerializer,
+    ReservationListSerializer,
 )
 
 
@@ -137,6 +139,7 @@ class ReservationViewSet(viewsets.ModelViewSet):
         "tickets__performance__theater_hall",
     )
     serializer_class = ReservationSerializer
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         queryset = self.queryset.filter(user=self.request.user)

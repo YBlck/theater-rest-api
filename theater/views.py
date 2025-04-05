@@ -10,7 +10,8 @@ from theater.serializers import (
     GenreSerializer,
     PlaySerializer,
     PlayListSerializer,
-    PlayDetailSerializer, PlayImageSerializer,
+    PlayDetailSerializer,
+    PlayImageSerializer,
 )
 
 
@@ -27,6 +28,32 @@ class GenreViewSet(viewsets.ModelViewSet):
 class PlayViewSet(viewsets.ModelViewSet):
     queryset = Play.objects.prefetch_related("genres", "actors")
     serializer_class = PlaySerializer
+
+    @staticmethod
+    def _params_to_ints(params) -> list[int]:
+        """Convert a list of string IDs to a list of integers"""
+        return [int(param_id) for param_id in params.split(",")]
+
+    def get_queryset(self):
+        """Plays filtering by title, actor or genre"""
+        title = self.request.query_params.get("title")
+        actors = self.request.query_params.get("actors")
+        genres = self.request.query_params.get("genres")
+
+        queryset = self.queryset
+
+        if title:
+            queryset = queryset.filter(title__icontains=title)
+
+        if actors:
+            actors_ids = self._params_to_ints(actors)
+            queryset = queryset.filter(actors__in=actors_ids)
+
+        if genres:
+            genres_ids = self._params_to_ints(genres)
+            queryset = queryset.filter(genres__in=genres_ids)
+
+        return queryset
 
     def get_serializer_class(self):
         if self.action == "list":

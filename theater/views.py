@@ -7,7 +7,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
-from theater.models import Actor, Genre, Play, Performance, TheaterHall
+from theater.models import Actor, Genre, Play, Performance, TheaterHall, Reservation
 from theater.serializers import (
     ActorSerializer,
     GenreSerializer,
@@ -18,7 +18,7 @@ from theater.serializers import (
     PerformanceSerializer,
     PerformanceListSerializer,
     TheaterHallSerializer,
-    PerformanceDetailSerializer,
+    PerformanceDetailSerializer, ReservationSerializer, ReservationListSerializer,
 )
 
 
@@ -129,3 +129,23 @@ class PerformanceViewSet(viewsets.ModelViewSet):
             return PerformanceDetailSerializer
 
         return PerformanceSerializer
+
+
+class ReservationViewSet(viewsets.ModelViewSet):
+    queryset = Reservation.objects.prefetch_related(
+        "tickets__performance__play",
+        "tickets__performance__theater_hall",
+    )
+    serializer_class = ReservationSerializer
+
+    def get_queryset(self):
+        queryset = self.queryset.filter(user=self.request.user)
+        return queryset
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return ReservationListSerializer
+        return ReservationSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)

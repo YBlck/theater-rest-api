@@ -4,14 +4,14 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
-from theater.models import Actor, Genre, Play
+from theater.models import Actor, Genre, Play, Performance
 from theater.serializers import (
     ActorSerializer,
     GenreSerializer,
     PlaySerializer,
     PlayListSerializer,
     PlayDetailSerializer,
-    PlayImageSerializer,
+    PlayImageSerializer, PerformanceSerializer, PerformanceListSerializer,
 )
 
 
@@ -83,3 +83,14 @@ class PlayViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PerformanceViewSet(viewsets.ModelViewSet):
+    queryset = Performance.objects.all()
+    serializer_class = PerformanceSerializer
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return PerformanceListSerializer
+
+        return PerformanceSerializer

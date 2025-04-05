@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from theater.models import Actor, Genre, Play
+from theater.models import Actor, Genre, Play, Performance
 
 
 class ActorSerializer(serializers.ModelSerializer):
@@ -35,3 +35,21 @@ class PlayImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Play
         fields = ("id", "image")
+
+
+class PerformanceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Performance
+        fields = ("id", "play", "theater_hall", "show_time")
+
+
+class PerformanceListSerializer(PerformanceSerializer):
+    play = serializers.CharField(source="play.title", read_only=True)
+    theater_hall = serializers.CharField(source="theater_hall.name", read_only=True)
+    theater_hall_capacity = serializers.IntegerField(source="theater_hall.capacity", read_only=True)
+
+    class Meta:
+        model = Performance
+        fields = ("id", "play", "theater_hall", "show_time", "theater_hall_capacity")
+
+

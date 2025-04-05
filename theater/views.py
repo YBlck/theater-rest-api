@@ -4,14 +4,14 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
-from theater.models import Actor, Genre, Play, Performance
+from theater.models import Actor, Genre, Play, Performance, TheaterHall
 from theater.serializers import (
     ActorSerializer,
     GenreSerializer,
     PlaySerializer,
     PlayListSerializer,
     PlayDetailSerializer,
-    PlayImageSerializer, PerformanceSerializer, PerformanceListSerializer,
+    PlayImageSerializer, PerformanceSerializer, PerformanceListSerializer, TheaterHallSerializer,
 )
 
 
@@ -23,6 +23,11 @@ class ActorViewSet(viewsets.ModelViewSet):
 class GenreViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
+
+
+class TheaterHallViewSet(viewsets.ModelViewSet):
+    queryset = TheaterHall.objects.all()
+    serializer_class = TheaterHallSerializer
 
 
 class PlayViewSet(viewsets.ModelViewSet):

@@ -2,13 +2,27 @@ from django.db import transaction
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from theater.models import Actor, Genre, Play, Performance, TheaterHall, Ticket, Reservation
+from theater.models import (
+    Actor,
+    Genre,
+    Play,
+    Performance,
+    TheaterHall,
+    Ticket,
+    Reservation,
+)
 
 
 class ActorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Actor
-        fields = ("id", "first_name", "last_name", "full_name")
+        fields = ("id", "first_name", "last_name", "full_name", "image")
+
+
+class ActorImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Actor
+        fields = ("id", "image")
 
 
 class GenreSerializer(serializers.ModelSerializer):

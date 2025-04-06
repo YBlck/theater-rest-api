@@ -20,13 +20,35 @@ from theater.serializers import (
     TheaterHallSerializer,
     PerformanceDetailSerializer,
     ReservationSerializer,
-    ReservationListSerializer,
+    ReservationListSerializer, ActorImageSerializer,
 )
 
 
 class ActorViewSet(viewsets.ModelViewSet):
     queryset = Actor.objects.all()
     serializer_class = ActorSerializer
+
+    def get_serializer_class(self):
+        if self.action == "upload_image":
+            return ActorImageSerializer
+        return ActorSerializer
+
+    @action(
+        detail=True,
+        methods=["POST"],
+        url_path="upload-image",
+        permission_classes=[IsAdminUser],
+    )
+    def upload_image(self, request, pk=None):
+        """Endpoint for uploading an image for an actor."""
+        actor = self.get_object()
+        serializer = self.get_serializer(actor, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class GenreViewSet(viewsets.ModelViewSet):
@@ -84,8 +106,8 @@ class PlayViewSet(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=["POST"],
-        permission_classes=[IsAdminUser],
         url_path="upload-image",
+        permission_classes=[IsAdminUser],
     )
     def upload_image(self, request, pk=None):
         """Endpoint for uploading an image to a play"""

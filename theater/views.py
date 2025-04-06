@@ -2,10 +2,11 @@ from datetime import datetime
 
 from django.db.models import F
 from django.db.models.aggregates import Count
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, mixins
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
 
 from theater.models import Actor, Genre, Play, Performance, TheaterHall, Reservation
 from theater.serializers import (
@@ -20,11 +21,16 @@ from theater.serializers import (
     TheaterHallSerializer,
     PerformanceDetailSerializer,
     ReservationSerializer,
-    ReservationListSerializer, ActorImageSerializer,
+    ReservationListSerializer,
+    ActorImageSerializer,
 )
 
 
-class ActorViewSet(viewsets.ModelViewSet):
+class ActorViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
     queryset = Actor.objects.all()
     serializer_class = ActorSerializer
 

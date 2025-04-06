@@ -17,7 +17,7 @@ def actor_image_file_path(instance: "Actor", filename: str) -> str:
 class Actor(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
-    image = models.ImageField(upload_to=actor_image_file_path, null=True)
+    image = models.ImageField(upload_to=actor_image_file_path, null=True, blank=True)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
@@ -46,7 +46,7 @@ class Play(models.Model):
     description = models.TextField(blank=True)
     actors = models.ManyToManyField(Actor, related_name="plays")
     genres = models.ManyToManyField(Genre, related_name="plays")
-    image = models.ImageField(upload_to=play_image_file_path, null=True)
+    image = models.ImageField(upload_to=play_image_file_path, null=True, blank=True)
 
     class Meta:
         ordering = ["title"]

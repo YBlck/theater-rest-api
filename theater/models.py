@@ -7,9 +7,17 @@ from django.db import models
 from django.utils.text import slugify
 
 
+def actor_image_file_path(instance: "Actor", filename: str) -> str:
+    _, extension = os.path.splitext(filename)
+    filename = f"{slugify(instance.full_name)}-{uuid.uuid4()}{extension}"
+
+    return os.path.join("uploads/actors/", filename)
+
+
 class Actor(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
+    image = models.ImageField(upload_to=actor_image_file_path, null=True)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"

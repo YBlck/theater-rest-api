@@ -9,7 +9,7 @@ app_name = "theater"
 router = DefaultRouter()
 router.register("actors", ActorViewSet)
 router.register("genres", GenreViewSet)
-router.register("theater-halls", TheaterHallViewSet)
+router.register("theater-halls", TheaterHallViewSet, basename="theater-hall")
 router.register("plays", PlayViewSet)
 router.register("performances", PerformanceViewSet)
 router.register("reservations", ReservationViewSet)

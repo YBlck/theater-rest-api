@@ -2,6 +2,8 @@ from datetime import datetime
 
 from django.db.models import F
 from django.db.models.aggregates import Count
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import viewsets, status, mixins
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
@@ -122,6 +124,32 @@ class PlayViewSet(
 
         return PlaySerializer
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="title",
+                description="Filter by title",
+                type=OpenApiTypes.STR,
+                required=False,
+            ),
+            OpenApiParameter(
+                name="genres",
+                description="Filter by genres",
+                type={"type": "array", "items": {"type": "integer"}},
+                required=False,
+            ),
+            OpenApiParameter(
+                name="actors",
+                description="Filter by actors",
+                type={"type": "array", "items": {"type": "integer"}},
+                required=False,
+            ),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        """Get list of plays"""
+        return super().list(request, *args, **kwargs)
+
     @action(
         detail=True,
         methods=["POST"],
@@ -172,6 +200,26 @@ class PerformanceViewSet(viewsets.ModelViewSet):
             return PerformanceDetailSerializer
 
         return PerformanceSerializer
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="date",
+                description="Filter by date",
+                type=OpenApiTypes.DATE,
+                required=False,
+            ),
+            OpenApiParameter(
+                name="play",
+                description="Filter by play",
+                type={"type": "array", "items": {"type": "integer"}},
+                required=False,
+            ),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        """Get list of performances"""
+        return super().list(request, *args, **kwargs)
 
 
 class ReservationViewSet(

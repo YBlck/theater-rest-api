@@ -6,6 +6,7 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import viewsets, status, mixins
 from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
@@ -222,6 +223,12 @@ class PerformanceViewSet(viewsets.ModelViewSet):
         return super().list(request, *args, **kwargs)
 
 
+class ReservationPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = "page-size"
+    max_page_size = 100
+
+
 class ReservationViewSet(
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
@@ -233,6 +240,7 @@ class ReservationViewSet(
     )
     serializer_class = ReservationSerializer
     permission_classes = (IsAuthenticated,)
+    pagination_class = ReservationPagination
 
     def get_queryset(self):
         queryset = self.queryset.filter(user=self.request.user)

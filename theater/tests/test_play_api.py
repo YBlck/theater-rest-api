@@ -9,6 +9,9 @@ from theater.serializers import PlayListSerializer, PlayDetailSerializer
 
 PLAY_URL = reverse("theater:play-list")
 
+def detail_url(obj_id):
+    return reverse("theater:play-detail", args=[obj_id])
+
 
 class PlayAPITests(TestCase):
     @classmethod
@@ -86,7 +89,7 @@ class AuthorizedUserTests(PlayAPITests):
         self.assertEqual(len(response.data), 1)
 
     def test_play_detail(self):
-        url = reverse("theater:play-detail", args=[self.play_1.id])
+        url = detail_url(self.play_1.id)
         response = self.client.get(url)
         serializer = PlayDetailSerializer(self.play_1)
 
@@ -146,7 +149,7 @@ class AdminUserTests(PlayAPITests):
             title="test_title",
             description="test_description",
         )
-        url = reverse("theater:play-detail", args=[play.id])
+        url = detail_url(play.id)
         response = self.client.delete(url)
 
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)

@@ -26,7 +26,7 @@ class ActorAPITests(TestCase):
             )
 
 
-class AutorizedUserTests(ActorAPITests):
+class AuthorizedUserTests(ActorAPITests):
     def setUp(self):
         self.client = APIClient()
         self.client.force_authenticate(user=self.test_user)

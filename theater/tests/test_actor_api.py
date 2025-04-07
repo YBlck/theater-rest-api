@@ -11,6 +11,7 @@ ACTOR_URL = reverse("theater:actor-list")
 
 
 class ActorAPITests(TestCase):
+    """Setup DB for tests"""
     @classmethod
     def setUpTestData(cls):
         cls.test_user = get_user_model().objects.create_user(
@@ -27,11 +28,13 @@ class ActorAPITests(TestCase):
 
 
 class AuthorizedUserTests(ActorAPITests):
+    """Test API with regular user authentication"""
     def setUp(self):
         self.client = APIClient()
         self.client.force_authenticate(user=self.test_user)
 
     def test_actor_list(self):
+        """Test that actor list works and return correct response"""
         response = self.client.get(ACTOR_URL)
         actors = Actor.objects.all()
         serializer = ActorSerializer(actors, many=True)
@@ -40,6 +43,7 @@ class AuthorizedUserTests(ActorAPITests):
         self.assertEqual(response.data, serializer.data)
 
     def test_actor_detail_does_not_exist(self):
+        """Test that detail for actor does not exist"""
         actor = Actor.objects.first()
         url = f"{ACTOR_URL}/{actor.id}/"
         response = self.client.get(url)
@@ -47,6 +51,7 @@ class AuthorizedUserTests(ActorAPITests):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_actor_create_forbidden(self):
+        """Test that regular user can't create new actor"""
         payload = {
             "first_name": "first",
             "last_name": "last",
@@ -57,11 +62,13 @@ class AuthorizedUserTests(ActorAPITests):
 
 
 class AdminUserTests(ActorAPITests):
+    """Test API with admin user authentication"""
     def setUp(self):
         self.client = APIClient()
         self.client.force_authenticate(user=self.test_admin)
 
     def test_actor_create_allowed(self):
+        """Test that admin user can create new actor"""
         payload = {
             "first_name": "first",
             "last_name": "last",

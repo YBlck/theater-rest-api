@@ -11,6 +11,7 @@ THEATER_HALL_URL = reverse("theater:theater-hall-list")
 
 
 class TheaterHallAPITests(TestCase):
+    """Setup DB for tests"""
     @classmethod
     def setUpTestData(cls):
         cls.test_user = get_user_model().objects.create_user(
@@ -28,11 +29,13 @@ class TheaterHallAPITests(TestCase):
 
 
 class AuthorizedUserTests(TheaterHallAPITests):
+    """Test API with regular user authentication"""
     def setUp(self):
         self.client = APIClient()
         self.client.force_authenticate(user=self.test_user)
 
     def test_theater_hall_list(self):
+        """Test that theater hall list works and return correct response"""
         response = self.client.get(THEATER_HALL_URL)
         theater_halls = TheaterHall.objects.all()
         serializer = TheaterHallSerializer(theater_halls, many=True)
@@ -41,13 +44,15 @@ class AuthorizedUserTests(TheaterHallAPITests):
         self.assertEqual(response.data, serializer.data)
 
     def test_theater_hall_detail_does_not_exist(self):
+        """Test that detail for theater hall does not exist"""
         theater_hall = TheaterHall.objects.first()
         url = f"{THEATER_HALL_URL}/{theater_hall.id}/"
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_theater_hall_create_forbiden(self):
+    def test_theater_hall_create_forbidden(self):
+        """Test that regular user can't create new theater hall"""
         payload = {
             "name": "test_hall",
             "rows": 10,
@@ -59,11 +64,13 @@ class AuthorizedUserTests(TheaterHallAPITests):
 
 
 class AdminUserTests(TheaterHallAPITests):
+    """Test API with admin user authentication"""
     def setUp(self):
         self.client = APIClient()
         self.client.force_authenticate(user=self.test_admin)
 
     def test_theater_hall_create_allowed(self):
+        """Test that admin user can create new theater hall"""
         payload = {
             "name": "test_hall",
             "rows": 10,

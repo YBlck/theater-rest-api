@@ -14,6 +14,7 @@ RESERVATION_URL = reverse("theater:reservation-list")
 
 
 class UnauthorizedUserTests(TestCase):
+    """Test all theater endpoints without authentication"""
     def setUp(self):
         self.client = APIClient()
 

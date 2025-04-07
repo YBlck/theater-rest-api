@@ -10,10 +10,12 @@ from theater.serializers import PlayListSerializer, PlayDetailSerializer
 PLAY_URL = reverse("theater:play-list")
 
 def detail_url(obj_id):
+    """Create detail URL for object"""
     return reverse("theater:play-detail", args=[obj_id])
 
 
 class PlayAPITests(TestCase):
+    """Setup DB for tests"""
     @classmethod
     def setUpTestData(cls):
         cls.test_user = get_user_model().objects.create_user(
@@ -37,11 +39,13 @@ class PlayAPITests(TestCase):
 
 
 class AuthorizedUserTests(PlayAPITests):
+    """Test API with regular user authentication"""
     def setUp(self):
         self.client = APIClient()
         self.client.force_authenticate(user=self.test_user)
 
     def test_play_list(self):
+        """Test that play list works and return correct response"""
         response = self.client.get(PLAY_URL)
         plays = Play.objects.all()
         serializer = PlayListSerializer(plays, many=True)
@@ -50,6 +54,7 @@ class AuthorizedUserTests(PlayAPITests):
         self.assertEqual(response.data, serializer.data)
 
     def test_play_list_filter_by_title(self):
+        """Test that play list filter by title works and return correct response"""
         response = self.client.get(PLAY_URL, {"title": self.play_1.title})
 
         serializer_play_1 = PlayListSerializer(self.play_1)
@@ -63,6 +68,7 @@ class AuthorizedUserTests(PlayAPITests):
         self.assertEqual(len(response.data), 1)
 
     def test_play_list_filter_by_genres(self):
+        """Test that play list filter by genres works and return correct response"""
         response = self.client.get(PLAY_URL, {"genres": self.genre_1.id})
 
         serializer_play_1 = PlayListSerializer(self.play_1)
@@ -76,6 +82,7 @@ class AuthorizedUserTests(PlayAPITests):
         self.assertEqual(len(response.data), 1)
 
     def test_play_list_filter_by_actors(self):
+        """Test that play list filter by actors works and return correct response"""
         response = self.client.get(PLAY_URL, {"actors": self.actor_1.id})
 
         serializer_play_1 = PlayListSerializer(self.play_1)
@@ -89,6 +96,7 @@ class AuthorizedUserTests(PlayAPITests):
         self.assertEqual(len(response.data), 1)
 
     def test_play_detail(self):
+        """Test that play detail works and return correct response"""
         url = detail_url(self.play_1.id)
         response = self.client.get(url)
         serializer = PlayDetailSerializer(self.play_1)
@@ -97,6 +105,7 @@ class AuthorizedUserTests(PlayAPITests):
         self.assertEqual(response.data, serializer.data)
 
     def test_play_create_forbidden(self):
+        """Test that regular user can't create new play"""
         payload = {
             "title": "test_play",
         }
@@ -106,11 +115,13 @@ class AuthorizedUserTests(PlayAPITests):
 
 
 class AdminUserTests(PlayAPITests):
+    """Test API with admin user authentication"""
     def setUp(self):
         self.client = APIClient()
         self.client.force_authenticate(user=self.test_admin)
 
     def test_play_create_allowed(self):
+        """Test that admin user can create new play"""
         payload = {
             "title": "test_title",
             "description": "test_description",
@@ -123,6 +134,7 @@ class AdminUserTests(PlayAPITests):
             self.assertEqual(payload[key], getattr(play, key))
 
     def test_create_movie_with_genres_and_actors(self):
+        """Test that admin user can create new play with actors data"""
         payload = {
             "title": "test",
             "description": "test",
@@ -145,6 +157,7 @@ class AdminUserTests(PlayAPITests):
         self.assertEqual(len(actors), 2)
 
     def test_play_delete_not_allowed(self):
+        """Test that admin user can't delete play"""
         play = Play.objects.create(
             title="test_title",
             description="test_description",

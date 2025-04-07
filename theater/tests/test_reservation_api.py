@@ -16,6 +16,7 @@ RESERVATION_URL = reverse("theater:reservation-list")
 
 
 class ReservationAPITests(TestCase):
+    """Setup DB for tests"""
     @classmethod
     def setUpTestData(cls):
         cls.test_user = get_user_model().objects.create_user(
@@ -66,11 +67,13 @@ class ReservationAPITests(TestCase):
 
 
 class AuthorizedUserTests(ReservationAPITests):
+    """Test API with regular user authentication"""
     def setUp(self):
         self.client = APIClient()
         self.client.force_authenticate(user=self.test_user)
 
     def test_reservation_list(self):
+        """Test that reservation list works and return correct response"""
         response = self.client.get(RESERVATION_URL)
         reservations = Reservation.objects.filter(user=self.test_user)
         serializer = ReservationListSerializer(reservations, many=True)
@@ -80,6 +83,7 @@ class AuthorizedUserTests(ReservationAPITests):
         self.assertIn("next", response.data)
 
     def test_reservation_create_with_tickets_allowed(self):
+        """Test that reservation creates with tickets and return correct response"""
         payload = {
             "tickets": [
                 {"row": 5, "seat": 5, "performance": self.performance_1.id},
@@ -94,12 +98,14 @@ class AuthorizedUserTests(ReservationAPITests):
         self.assertEqual(response.data, serializer.data)
 
     def test_reservation_create_tickets_required(self):
+        """Test that reservation required tickets for creation"""
         payload = {"tickets": []}
         response = self.client.post(RESERVATION_URL, payload, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_reservation_taken_place_forbidden(self):
+        """Test that reservation will be not created with when place is already taken"""
         payload = {
             "tickets": [{"row": 1, "seat": 1, "performance": self.performance_1.id}]
         }

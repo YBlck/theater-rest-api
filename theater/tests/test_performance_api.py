@@ -18,10 +18,12 @@ PERFORMANCE_URL = reverse("theater:performance-list")
 
 
 def detail_url(obj_id):
+    """Create detail URL for object"""
     return reverse("theater:performance-detail", args=[obj_id])
 
 
 class PerformanceAPITests(TestCase):
+    """Setup DB for tests"""
     @classmethod
     def setUpTestData(cls):
         cls.test_user = get_user_model().objects.create_user(
@@ -60,11 +62,13 @@ class PerformanceAPITests(TestCase):
 
 
 class AuthorizedUserTests(PerformanceAPITests):
+    """Test API with regular user authentication"""
     def setUp(self):
         self.client = APIClient()
         self.client.force_authenticate(user=self.test_user)
 
     def test_performance_list(self):
+        """Test that performance list works and return correct response"""
         response = self.client.get(PERFORMANCE_URL)
         performances = Performance.objects.all().annotate(
             tickets_available=(
@@ -78,6 +82,7 @@ class AuthorizedUserTests(PerformanceAPITests):
         self.assertEqual(response.data, serializer.data)
 
     def test_performance_list_filter_by_play(self):
+        """Test that performance list filter by play works and return correct response"""
         response = self.client.get(PERFORMANCE_URL, data={"play": self.play_1.id})
         performances = Performance.objects.all().annotate(
             tickets_available=(
@@ -100,6 +105,7 @@ class AuthorizedUserTests(PerformanceAPITests):
         self.assertEqual(len(response.data), 1)
 
     def test_performance_list_filter_by_date(self):
+        """Test that performance list filter by date works and return correct response"""
         response = self.client.get(PERFORMANCE_URL, data={"date": "2025-10-10"})
         performances = Performance.objects.all().annotate(
             tickets_available=(
@@ -122,6 +128,7 @@ class AuthorizedUserTests(PerformanceAPITests):
         self.assertEqual(len(response.data), 1)
 
     def test_performance_detail(self):
+        """Test that performance detail works and return correct response"""
         url = detail_url(self.performance_1.id)
         response = self.client.get(url)
         serializer = PerformanceDetailSerializer(self.performance_1)
@@ -130,6 +137,7 @@ class AuthorizedUserTests(PerformanceAPITests):
         self.assertEqual(serializer.data, response.data)
 
     def test_performance_create_forbidden(self):
+        """Test that regular user can't create new performance"""
         payload = {
             "play": self.play_1.id,
             "theater_hall": self.hall_1.id,
@@ -140,6 +148,7 @@ class AuthorizedUserTests(PerformanceAPITests):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_performance_delete_forbidden(self):
+        """Test that regular user can't delete existing performance"""
         performance = Performance.objects.create(
             play=self.play_1,
             theater_hall=self.hall_1,
@@ -152,21 +161,25 @@ class AuthorizedUserTests(PerformanceAPITests):
 
 
 class AdminUserTests(PerformanceAPITests):
+    """Test API with admin user authentication"""
     def setUp(self):
         self.client = APIClient()
         self.client.force_authenticate(user=self.test_admin)
 
     def test_performance_create_allowed(self):
+        """Test that admin user can create new performance"""
         payload = {
             "play": self.play_1.id,
             "theater_hall": self.hall_1.id,
             "show_time": datetime(2025, 10, 13, 18, 00, tzinfo=timezone.utc),
         }
         response = self.client.post(PERFORMANCE_URL, payload)
+        performance = Performance.objects.get(pk=response.data["id"])
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_performance_delete_allowed(self):
+        """Test that admin user can delete performance"""
         performance = Performance.objects.create(
             play=self.play_1,
             theater_hall=self.hall_1,

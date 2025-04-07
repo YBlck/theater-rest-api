@@ -12,6 +12,7 @@ GENRE_URL = reverse("theater:genre-list")
 
 
 class GenreAPITests(TestCase):
+    """Setup DB for tests"""
     @classmethod
     def setUpTestData(cls):
         cls.test_user = get_user_model().objects.create_user(
@@ -25,11 +26,13 @@ class GenreAPITests(TestCase):
 
 
 class AuthorizedUserTests(GenreAPITests):
+    """Test API with regular user authentication"""
     def setUp(self):
         self.client = APIClient()
         self.client.force_authenticate(user=self.test_user)
 
     def test_genre_list(self):
+        """Test that genre list works and return correct response"""
         response = self.client.get(GENRE_URL)
         genres = Genre.objects.all()
         serializer = GenreSerializer(genres, many=True)
@@ -38,6 +41,7 @@ class AuthorizedUserTests(GenreAPITests):
         self.assertEqual(response.data, serializer.data)
 
     def test_genre_detail_does_not_exist(self):
+        """Test that detail for genre page does not exist"""
         genre = Genre.objects.first()
         url = f"{GENRE_URL}/{genre.id}/"
         response = self.client.get(url)
@@ -45,6 +49,7 @@ class AuthorizedUserTests(GenreAPITests):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_genre_create_forbidden(self):
+        """Test that regular user can't create new genre"""
         payload = {"name": "test_genre"}
         response = self.client.post(GENRE_URL, payload)
 
@@ -52,11 +57,13 @@ class AuthorizedUserTests(GenreAPITests):
 
 
 class AdminUserTests(GenreAPITests):
+    """Test API with admin user authentication"""
     def setUp(self):
         self.client = APIClient()
         self.client.force_authenticate(user=self.test_admin)
 
     def test_genre_create_allowed(self):
+        """Test that admin user can create new genre"""
         payload = {"name": "test_genre"}
         response = self.client.post(GENRE_URL, payload)
         genre = Genre.objects.get(id=response.data["id"])

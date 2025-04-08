@@ -11,7 +11,14 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from theater.models import Actor, Genre, Play, Performance, TheaterHall, Reservation
+from theater.models import (
+    Actor,
+    Genre,
+    Play,
+    Performance,
+    TheaterHall,
+    Reservation,
+)
 from theater.serializers import (
     ActorSerializer,
     GenreSerializer,
@@ -170,9 +177,12 @@ class PlayViewSet(
 
 
 class PerformanceViewSet(viewsets.ModelViewSet):
-    queryset = Performance.objects.select_related("play", "theater_hall").annotate(
+    queryset = Performance.objects.select_related(
+        "play", "theater_hall"
+    ).annotate(
         tickets_available=(
-            F("theater_hall__rows") * F("theater_hall__seats_in_row") - Count("tickets")
+            F("theater_hall__rows") * F("theater_hall__seats_in_row")
+            - Count("tickets")
         )
     )
     serializer_class = PerformanceSerializer

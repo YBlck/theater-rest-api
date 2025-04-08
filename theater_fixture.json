@@ -1,0 +1,379 @@
+[
+{
+    "model": "theater.actor",
+    "pk": 1,
+    "fields": {
+        "first_name": "Oleksandr",
+        "last_name": "Zinchenko",
+        "image": ""
+    }
+},
+{
+    "model": "theater.actor",
+    "pk": 2,
+    "fields": {
+        "first_name": "Yevheniya",
+        "last_name": "Kravchuk",
+        "image": ""
+    }
+},
+{
+    "model": "theater.actor",
+    "pk": 3,
+    "fields": {
+        "first_name": "Dmytro",
+        "last_name": "Stupka",
+        "image": ""
+    }
+},
+{
+    "model": "theater.actor",
+    "pk": 4,
+    "fields": {
+        "first_name": "Natalia",
+        "last_name": "Denysenko",
+        "image": ""
+    }
+},
+{
+    "model": "theater.actor",
+    "pk": 5,
+    "fields": {
+        "first_name": "Serhiy",
+        "last_name": "Stakhovsky",
+        "image": ""
+    }
+},
+{
+    "model": "theater.actor",
+    "pk": 6,
+    "fields": {
+        "first_name": "Kateryna",
+        "last_name": "Kuzmenko",
+        "image": ""
+    }
+},
+{
+    "model": "theater.genre",
+    "pk": 1,
+    "fields": {
+        "name": "Drama"
+    }
+},
+{
+    "model": "theater.genre",
+    "pk": 2,
+    "fields": {
+        "name": "Comedy"
+    }
+},
+{
+    "model": "theater.genre",
+    "pk": 3,
+    "fields": {
+        "name": "Tragicomedy"
+    }
+},
+{
+    "model": "theater.genre",
+    "pk": 4,
+    "fields": {
+        "name": "Melodrama"
+    }
+},
+{
+    "model": "theater.genre",
+    "pk": 5,
+    "fields": {
+        "name": "Farce"
+    }
+},
+{
+    "model": "theater.play",
+    "pk": 1,
+    "fields": {
+        "title": "A Doll's House",
+        "description": "This play revolves around Nora Helmer, a seemingly happy housewife who gradually realizes she has been living a life of deceit and subservience to her husband, Torvald. It's a powerful critique of 19th-century marriage norms and a groundbreaking work in feminist theatre",
+        "image": "",
+        "actors": [
+            1,
+            2,
+            3
+        ],
+        "genres": [
+            1
+        ]
+    }
+},
+{
+    "model": "theater.play",
+    "pk": 2,
+    "fields": {
+        "title": "Waiting for Godot",
+        "description": "A play in which two characters, Vladimir and Estragon, engage in a variety of discussions and encounters while awaiting the arrival 1  of someone named Godot, who never comes. It's a seminal work of absurdist theatre, exploring themes of hope, meaninglessness, and the human condition",
+        "image": "",
+        "actors": [
+            4,
+            5,
+            6
+        ],
+        "genres": [
+            3
+        ]
+    }
+},
+{
+    "model": "theater.play",
+    "pk": 3,
+    "fields": {
+        "title": "The Cherry Orchard",
+        "description": "Set in Russia at the turn of the 20th century, this play depicts the plight of an aristocratic family who are about to lose their beloved cherry orchard due to mounting debt. It explores themes of social change, the fading of the old order, and the bittersweet nature of loss and transition",
+        "image": "",
+        "actors": [
+            1,
+            2,
+            4,
+            6
+        ],
+        "genres": [
+            3
+        ]
+    }
+},
+{
+    "model": "theater.theaterhall",
+    "pk": 1,
+    "fields": {
+        "name": "Small scene",
+        "rows": 10,
+        "seats_in_row": 10
+    }
+},
+{
+    "model": "theater.theaterhall",
+    "pk": 2,
+    "fields": {
+        "name": "Medium scene",
+        "rows": 18,
+        "seats_in_row": 15
+    }
+},
+{
+    "model": "theater.theaterhall",
+    "pk": 3,
+    "fields": {
+        "name": "Big scene",
+        "rows": 30,
+        "seats_in_row": 25
+    }
+},
+{
+    "model": "theater.performance",
+    "pk": 1,
+    "fields": {
+        "play": 1,
+        "theater_hall": 3,
+        "show_time": "2025-04-20T15:00:00Z"
+    }
+},
+{
+    "model": "theater.performance",
+    "pk": 2,
+    "fields": {
+        "play": 3,
+        "theater_hall": 2,
+        "show_time": "2025-04-20T15:00:00Z"
+    }
+},
+{
+    "model": "theater.performance",
+    "pk": 3,
+    "fields": {
+        "play": 2,
+        "theater_hall": 1,
+        "show_time": "2025-04-20T15:00:00Z"
+    }
+},
+{
+    "model": "theater.performance",
+    "pk": 4,
+    "fields": {
+        "play": 1,
+        "theater_hall": 3,
+        "show_time": "2025-04-27T15:00:00Z"
+    }
+},
+{
+    "model": "theater.performance",
+    "pk": 5,
+    "fields": {
+        "play": 3,
+        "theater_hall": 2,
+        "show_time": "2025-04-27T15:00:00Z"
+    }
+},
+{
+    "model": "theater.performance",
+    "pk": 6,
+    "fields": {
+        "play": 2,
+        "theater_hall": 1,
+        "show_time": "2025-04-27T15:00:00Z"
+    }
+},
+{
+    "model": "theater.reservation",
+    "pk": 1,
+    "fields": {
+        "created_at": "2025-04-08T01:05:42.995Z",
+        "user": 1
+    }
+},
+{
+    "model": "theater.reservation",
+    "pk": 2,
+    "fields": {
+        "created_at": "2025-04-08T01:06:55.522Z",
+        "user": 2
+    }
+},
+{
+    "model": "theater.reservation",
+    "pk": 3,
+    "fields": {
+        "created_at": "2025-04-08T01:07:46.537Z",
+        "user": 3
+    }
+},
+{
+    "model": "theater.ticket",
+    "pk": 1,
+    "fields": {
+        "row": 1,
+        "seat": 1,
+        "performance": 4,
+        "reservation": 1
+    }
+},
+{
+    "model": "theater.ticket",
+    "pk": 2,
+    "fields": {
+        "row": 1,
+        "seat": 2,
+        "performance": 4,
+        "reservation": 1
+    }
+},
+{
+    "model": "theater.ticket",
+    "pk": 3,
+    "fields": {
+        "row": 1,
+        "seat": 3,
+        "performance": 4,
+        "reservation": 1
+    }
+},
+{
+    "model": "theater.ticket",
+    "pk": 4,
+    "fields": {
+        "row": 5,
+        "seat": 5,
+        "performance": 6,
+        "reservation": 2
+    }
+},
+{
+    "model": "theater.ticket",
+    "pk": 5,
+    "fields": {
+        "row": 5,
+        "seat": 6,
+        "performance": 6,
+        "reservation": 2
+    }
+},
+{
+    "model": "theater.ticket",
+    "pk": 6,
+    "fields": {
+        "row": 2,
+        "seat": 5,
+        "performance": 2,
+        "reservation": 3
+    }
+},
+{
+    "model": "theater.ticket",
+    "pk": 7,
+    "fields": {
+        "row": 2,
+        "seat": 6,
+        "performance": 2,
+        "reservation": 3
+    }
+},
+{
+    "model": "theater.ticket",
+    "pk": 8,
+    "fields": {
+        "row": 2,
+        "seat": 4,
+        "performance": 2,
+        "reservation": 3
+    }
+},
+{
+    "model": "user.user",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$bTtarDaMG6QKNvUultRkAb$nYn2P9cRA9qMzut7OhGiCEPWNOHa+OS7IFOqyyuimj0=",
+        "last_login": "2025-04-08T00:46:14.356Z",
+        "is_superuser": true,
+        "first_name": "",
+        "last_name": "",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2025-04-08T00:45:31.314Z",
+        "email": "admin@theater.com",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "user.user",
+    "pk": 2,
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$IHpiRUuaiyBJq1F34jm40t$jdE//aFVH3q8gz1Y9CgS3wFN6vu5ua8UfLrPullec4c=",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2025-04-08T00:58:43.319Z",
+        "email": "user1@theater.com",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "user.user",
+    "pk": 3,
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$RXJlxH667jLF7Yyou0Q4Ts$T/QzU78PjT2wlvGUFUQ3FTFtJ0ixGj+pB16drEoDvHI=",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "",
+        "last_name": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2025-04-08T00:59:14.109Z",
+        "email": "user2@theater.com",
+        "groups": [],
+        "user_permissions": []
+    }
+}
+]

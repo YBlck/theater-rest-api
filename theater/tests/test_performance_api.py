@@ -75,7 +75,7 @@ class AuthorizedUserTests(PerformanceAPITests):
                 F("theater_hall__rows") * F("theater_hall__seats_in_row")
                 - Count("tickets")
             )
-        )
+        ).order_by("show_time")
         serializer = PerformanceListSerializer(performances, many=True)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)

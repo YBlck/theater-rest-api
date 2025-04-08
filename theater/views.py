@@ -184,7 +184,7 @@ class PerformanceViewSet(viewsets.ModelViewSet):
             F("theater_hall__rows") * F("theater_hall__seats_in_row")
             - Count("tickets")
         )
-    )
+    ).order_by("show_time")
     serializer_class = PerformanceSerializer
 
     def get_queryset(self):
